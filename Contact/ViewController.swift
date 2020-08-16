@@ -11,10 +11,9 @@ import Contacts
 class ViewController: UIViewController {
 
     var contacts =  [FetchedContact]()
-    
-
 
     @IBOutlet var tableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
@@ -23,6 +22,7 @@ class ViewController: UIViewController {
         tableView.register(UINib(nibName: "TableViewCell", bundle: nil),
                            forCellReuseIdentifier: "ContactReuseCell")
     }
+    
     private func fetchContacts() {
         print("Attempting to fetch contacts")
 
@@ -44,6 +44,9 @@ class ViewController: UIViewController {
                         print(contact.givenName)
                         self.contacts.append(FetchedContact(firstName: contact.givenName, lastName: contact.familyName))
                     })
+                    
+                    self.tableView.reloadData()
+                    
                 } catch let error {
                     print("Failed to enumerate contact", error)
                 }
@@ -55,25 +58,36 @@ class ViewController: UIViewController {
    
 }
 extension ViewController: UITableViewDelegate{
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
-    {
-        print("you tapped me")
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell: TableViewCell = tableView.cellForRow(at: indexPath) as! TableViewCell
+        cell.check()
     }
 }
+
 extension ViewController : UITableViewDataSource
 {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ContactCell",for: indexPath)
-            
-        cell.textLabel?.text = contacts[indexPath.row].lastName + " " +
-            contacts[indexPath.row].firstName
-        cell.imageView?.image = UIImage(named: "58.png")
-        return cell
+        var cell: TableViewCell? = tableView.dequeueReusableCell(withIdentifier: "ContactReuseCell",
+                                                                 for: indexPath) as? TableViewCell
+        
+        if cell == nil {
+            let nib = Bundle.main.loadNibNamed("TableViewCell", owner: self, options: .none)
+            cell = (nib!.first! as! TableViewCell)
+        }
+        
+        cell!.nameLabel.text = contacts[indexPath.row].lastName + " " + contacts[indexPath.row].firstName
+        cell!.imgView.image = UIImage(named: "58.png")
+        cell?.selectionStyle = .none
+        
+        return cell!
     }
     
     func tableView(_ tableView: UITableView,numberOfRowsInSection section: Int) -> Int {
         return contacts.count
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
+    }
 }
 

@@ -10,44 +10,33 @@ import UIKit
 
 class TableViewCell: UITableViewCell {
 
+    @IBOutlet public weak var checkerImageView: UIImageView!
+    @IBOutlet public weak var imgView: UIImageView!
+    @IBOutlet public weak var nameLabel: UILabel!
     
-    @IBOutlet var checkBtn: UIButton!
-    @IBOutlet var imgView: UIImageView!
-    @IBOutlet weak var contactNameView: UITextView!
-    
-    let checkedImage = UIImage(named: "ic_check_box")! as UIImage
-    let uncheckedImage = UIImage(named: "ic_check_box_outline_blank")!
-    
-    @IBAction func onPressed(_ sender: Any) {
-        
-    }
+    let uncheckedImage = UIImage(named: "ic_check_box")! as UIImage
+    let checkedImage = UIImage(named: "ic_check_box_outline_blank")!
     
     var isChecked: Bool = false {
         didSet {
             if isChecked == true {
-                checkBtn.setImage(checkedImage, for: UIControl.State.normal)
+                checkerImageView.image = checkedImage
             } else {
-                checkBtn.setImage(uncheckedImage, for: UIControl.State.normal)
+                checkerImageView.image = uncheckedImage
             }
         }
     }
+    
+    func check() {
+        self.isChecked.toggle()
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
-        checkBtn.layer.cornerRadius = 50
-        imageView?.layer.cornerRadius = 90
-            imageView?.layer.masksToBounds = true
+        
+        checkerImageView.layer.cornerRadius = checkerImageView.frame.width / 2
+        checkerImageView.image = uncheckedImage
+        
+        imgView.layer.cornerRadius = imgView.frame.width / 2
     }
-    @IBAction func checkBoxBtn(_ sender: UIButton) {
-        if sender == self {
-            isChecked = !isChecked
-        }
-       }
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-    
-    
 }
